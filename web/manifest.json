@@ -1,11 +1,11 @@
 {
-    "name": "lashamezz",
-    "short_name": "lashamezz",
+    "name": "Zoogies",
+    "short_name": "Zoogies",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Zoogies NFT Project",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

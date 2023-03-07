@@ -28,11 +28,15 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  auto_size_text: ^3.0.0
   cupertino_icons: ^1.0.2
   dismissible_page: ^1.0.1
+  firebase_core: ^2.7.1
   flutter:
     sdk: flutter
+  flutter_staggered_animations: ^1.1.1
   google_fonts: ^4.0.3
+  shimmer: ^2.0.0
 
 dev_dependencies:
   flutter_lints: ^2.0.0
@@ -50,7 +54,7 @@ flutter:
   uses-material-design: true
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/images/vacanciesImage.png
+    - assets/images/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
   # For details regarding adding assets from package dependencies, see
@@ -64,6 +68,9 @@ flutter:
     - family: Lovelace
       fonts:
         - asset: assets/fonts/Lovelace-Medium.ttf
+    - family: Greybeard
+      fonts:
+        - asset: assets/fonts/greybeardbold.ttf
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

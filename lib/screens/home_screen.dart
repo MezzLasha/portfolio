@@ -1,6 +1,7 @@
+import 'dart:math';
+
 import 'package:dismissible_page/dismissible_page.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lashamezz/models/project_model.dart';
 import 'package:lashamezz/screens/project_detail_screen.dart';
 import 'package:lashamezz/ui/parallax.dart';
@@ -45,28 +46,21 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   ProjectPreviewColumn(
                     ProjectModel(
-                      title: 'Vacancies',
-                      titleImage:
-                          'https://cdn.pixabay.com/photo/2012/08/27/14/19/mountains-55067__340.png',
-                    ),
+                        title: 'Zoogies',
+                        backgroundColor: 'assets/images/1.png',
+                        hoverColor: Colors.white),
                   ),
                   ProjectPreviewColumn(
                     ProjectModel(
-                        title: 'Aggregate',
-                        titleImage:
-                            'https://images.unsplash.com/photo-1562043236-559c3b65a6e2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8bGFuZHNjYXBlc3xlbnwwfHwwfHw%3D&w=1000&q=80'),
+                        title: 'Roadmap',
+                        backgroundColor: 'assets/images/2.png',
+                        hoverColor: Colors.white),
                   ),
                   ProjectPreviewColumn(
                     ProjectModel(
-                        title: 'Modules',
-                        titleImage:
-                            'https://images.unsplash.com/photo-1500964757637-c85e8a162699?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTF8fHZpZXd8ZW58MHx8MHx8&w=1000&q=80'),
-                  ),
-                  ProjectPreviewColumn(
-                    ProjectModel(
-                        title: 'Other',
-                        titleImage:
-                            'https://static.wixstatic.com/media/bb1bd6_cb14f2fa77da4667a8289261989062e4~mv2.png/v1/fill/w_640,h_366,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/bb1bd6_cb14f2fa77da4667a8289261989062e4~mv2.png'),
+                        title: 'About',
+                        backgroundColor: 'assets/images/3.png',
+                        hoverColor: Colors.white),
                   ),
                 ],
               ),
@@ -75,77 +69,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ));
   }
 }
-
-// class ProjectPreviewColumn extends StatefulWidget {
-//   const ProjectPreviewColumn(
-//     this.project, {
-//     super.key,
-//   });
-
-//   final ProjectModel project;
-
-//   @override
-//   State<ProjectPreviewColumn> createState() => _ProjectPreviewColumnState();
-// }
-
-// class _ProjectPreviewColumnState extends State<ProjectPreviewColumn>
-//     with SingleTickerProviderStateMixin {
-//   late AnimationController animationController;
-//   late Animation<double> animation;
-//   @override
-//   void initState() {
-//     animationController = AnimationController(
-//         vsync: this, duration: const Duration(milliseconds: 500));
-//     animation =
-//         Tween<double>(begin: 0.1, end: 1.0).animate(animationController);
-//     super.initState();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final mdof = MediaQuery.of(context);
-//     double columnWidth = (2000 - kNavBarWidth) / 4;
-//     return MouseRegion(
-//       onEnter: (event) {
-//         animationController.forward();
-//       },
-//       onExit: (event) {
-//         animationController.reverse();
-//       },
-//       child: InkWell(
-//         splashFactory: InkSparkle.splashFactory,
-//         hoverColor: Colors.transparent,
-//         focusColor: Colors.black12,
-//         onTap: () {},
-//         child: SizedBox(
-//           height: double.infinity,
-//           width: columnWidth,
-//           child: Stack(
-//             children: [
-//               Positioned.fill(
-//                 left: widget.offset.dx * 50,
-//                 child: Container(
-//                   child: Image.asset(
-//                     widget.project.titleImage,
-//                     fit: BoxFit.none,
-//                   ),
-//                 ),
-//               ),
-//               Positioned.fill(
-//                 child: Center(
-//                   child: Text(
-//                     widget.project.title,
-//                     style: GoogleFonts.prata(fontSize: 30),
-//                   ),
-//                 ),
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
 
 class ProjectPreviewColumn extends StatefulWidget {
   const ProjectPreviewColumn(
@@ -179,7 +102,7 @@ class _ProjectPreviewColumnState extends State<ProjectPreviewColumn>
   @override
   Widget build(BuildContext context) {
     final mdof = MediaQuery.of(context);
-    double columnWidth = (mdof.size.width - kNavBarWidth) / 4;
+    double columnWidth = max(((mdof.size.width - kNavBarWidth) / 3), 300);
     return SizedBox(
       width: columnWidth,
       height: double.infinity,
@@ -191,6 +114,7 @@ class _ProjectPreviewColumnState extends State<ProjectPreviewColumn>
           onTap: () => context.pushTransparentRoute(
               ProjectDetailScreen(projectModel: widget.projectModel)),
           child: Stack(
+            fit: StackFit.expand,
             children: [
               AnimatedBuilder(
                   animation: _animation,
@@ -201,8 +125,13 @@ class _ProjectPreviewColumnState extends State<ProjectPreviewColumn>
                     );
                   },
                   child: _buildParallaxBackground(context)),
-              // _buildGradient(),
-              _buildTitle(),
+              AnimatedBuilder(
+                  animation: _animation,
+                  builder: (context, child) {
+                    return _buildTitle(Color.lerp(Colors.white,
+                            widget.projectModel.hoverColor, _animation.value) ??
+                        Colors.white);
+                  }),
             ],
           ),
         ),
@@ -215,22 +144,34 @@ class _ProjectPreviewColumnState extends State<ProjectPreviewColumn>
       createRectTween: (begin, end) {
         return MaterialRectCenterArcTween(begin: begin, end: end);
       },
-      tag: widget.projectModel.titleImage,
-      child: ParallaxBackground(
-          backgroundImageKey: _backgroundImageKey,
-          projectModel: widget.projectModel),
+      tag: widget.projectModel.backgroundColor,
+      child: SizedBox(
+        width: double.infinity,
+        height: double.infinity,
+        child: Image.asset(
+          widget.projectModel.backgroundColor,
+          fit: BoxFit.fitHeight,
+          key: _backgroundImageKey,
+        ),
+      ),
     );
   }
 
-  Widget _buildTitle() {
-    return Hero(
-      createRectTween: (begin, end) {
-        return MaterialRectCenterArcTween(begin: begin, end: end);
-      },
-      tag: '${widget.projectModel.titleImage}Text',
-      child: Center(
-        child: Text(widget.projectModel.title,
-            style: const TextStyle(fontFamily: 'Lovelace', fontSize: 40)),
+  Widget _buildTitle(Color color) {
+    return Center(
+      child: Hero(
+        createRectTween: (begin, end) {
+          return MaterialRectCenterArcTween(begin: begin, end: end);
+        },
+        tag: '${widget.projectModel.backgroundColor}Text',
+        child: DefaultTextStyle(
+          style: TextStyle(
+            fontFamily: 'Greybeard',
+            fontSize: 40,
+            color: color,
+          ),
+          child: Text(widget.projectModel.title),
+        ),
       ),
     );
   }
@@ -261,7 +202,7 @@ class _ParallaxBackgroundState extends State<ParallaxBackground> {
       ),
       children: [
         Image.network(
-          widget.projectModel.titleImage,
+          widget.projectModel.backgroundColor,
           key: widget._backgroundImageKey,
           fit: BoxFit.cover,
         ),
